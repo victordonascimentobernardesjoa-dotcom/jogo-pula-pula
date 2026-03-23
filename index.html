@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Pula Monstro - Aventura Noturna</title>
     <style>
         * {
@@ -21,6 +21,7 @@
             min-height: 100vh;
             font-family: 'Arial', sans-serif;
             color: white;
+            padding: 10px;
         }
 
         /* CABEÇALHO */
@@ -35,8 +36,8 @@
 
         #placar {
             display: flex;
-            gap: 20px;
-            font-size: 1.1rem;
+            gap: 15px;
+            font-size: 1rem;
         }
 
         #vidas {
@@ -45,8 +46,8 @@
         }
 
         .vida {
-            width: 20px;
-            height: 20px;
+            width: 18px;
+            height: 18px;
             background: #e74c3c;
             border-radius: 50%;
         }
@@ -54,7 +55,7 @@
         .vida-vazia { background: #34495e; }
 
         #recordes {
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             text-align: right;
         }
 
@@ -68,6 +69,7 @@
             font-weight: bold;
             cursor: pointer;
             margin-top: 5px;
+            font-size: 0.9rem;
         }
 
         /* TELA DO JOGO */
@@ -79,13 +81,8 @@
             border: 2px solid white;
             overflow: hidden;
             transition: background 1s ease;
+            background: linear-gradient(#0a0a1a, #1a1a3a);
         }
-
-        /* FASES */
-        .fase1 { background: linear-gradient(#0a0a1a, #1a1a3a); }
-        .fase2 { background: linear-gradient(#1a0a1a, #3a1a3a); }
-        .fase3 { background: linear-gradient(#0a1a1a, #1a3a3a); }
-        .fase4 { background: linear-gradient(#1a1a0a, #3a3a1a); }
 
         /* ELEMENTOS DO FUNDO */
         .estrela {
@@ -105,12 +102,8 @@
             top: 20px;
             right: 20px;
             box-shadow: 0 0 20px rgba(240, 240, 208, 0.8);
+            background: #f0f0d0;
         }
-
-        .lua-fase1 { background: #f0f0d0; }
-        .lua-fase2 { background: #d0c0f0; }
-        .lua-fase3 { background: #d0f0e0; }
-        .lua-fase4 { background: #f0e0d0; }
 
         /* PERSONAGEM */
         #personagem {
@@ -123,8 +116,6 @@
         }
 
         .personagem-escudo { box-shadow: 0 0 15px rgba(52, 152, 219, 0.8); border-radius: 50%; }
-        .personagem-rapido { transform: scale(1.1); }
-        .personagem-gigante { transform: scale(1.2); }
 
         #cabeca {
             width: 20px;
@@ -138,12 +129,8 @@
             width: 15px;
             height: 20px;
             margin: 2px auto 0;
+            background: #2980b9;
         }
-
-        .corpo-fase1 { background: #2980b9; }
-        .corpo-fase2 { background: #8e44ad; }
-        .corpo-fase3 { background: #16a085; }
-        .corpo-fase4 { background: #f39c12; }
 
         /* OBSTÁCULOS */
         .obstaculo {
@@ -156,15 +143,13 @@
 
         .monstro1 { background: #27ae60; border-top-left-radius: 15px; border-top-right-radius: 15px; }
         .monstro2 { background: #c0392b; border-radius: 10px; }
-        .monstro3 { background: #6c3483; border-top-left-radius: 20px; border-top-right-radius: 5px; }
-        .monstro4 { background: #f39c12; border-radius: 50% 50% 10px 10px; }
 
         /* ITENS E MOEDAS */
         .item {
-            width: 22px;
-            height: 22px;
+            width: 25px;
+            height: 25px;
             position: absolute;
-            bottom: 55px; /* Mais alto para facilitar coleta */
+            bottom: 55px;
             z-index: 8;
             animation: girar 1s infinite linear;
         }
@@ -173,13 +158,8 @@
             background: #f1c40f; 
             border-radius: 50%; 
             box-shadow: 0 0 10px rgba(241, 196, 15, 0.8);
-            width: 25px; /* Maior para facilitar coleta */
-            height: 25px;
         }
         .escudo { background: #3498db; border-radius: 50%; box-shadow: 0 0 10px rgba(52, 152, 219, 0.8); }
-        .velocidade { background: #9b59b6; border-radius: 5px; box-shadow: 0 0 10px rgba(155, 89, 182, 0.8); }
-        .duplo { background: #2ecc71; border-radius: 50% 0 50% 0; box-shadow: 0 0 10px rgba(46, 204, 113, 0.8); }
-        .vida-item { background: #e74c3c; border-radius: 50%; box-shadow: 0 0 10px rgba(231, 76, 60, 0.8); }
 
         /* CHÃO */
         #chao {
@@ -187,12 +167,8 @@
             height: 20px;
             position: absolute;
             bottom: 0;
+            background: #34495e;
         }
-
-        .chao-fase1 { background: #34495e; }
-        .chao-fase2 { background: #5d4037; }
-        .chao-fase3 { background: #2c3e50; }
-        .chao-fase4 { background: #6d4c41; }
 
         /* TELAS DE OVERLAY */
         .tela-overlay {
@@ -211,17 +187,16 @@
         }
 
         #tela-inicio { display: flex; }
-        #tela-fase { display: none; }
         #tela-fim { display: none; }
         #tela-loja { display: none; }
 
         button {
-            padding: 12px 30px;
+            padding: 10px 25px;
             background: #e67e22;
             border: none;
             border-radius: 8px;
             color: white;
-            font-size: 1.1rem;
+            font-size: 1rem;
             cursor: pointer;
             margin-top: 10px;
             transition: background 0.3s ease;
@@ -237,8 +212,6 @@
             margin: 5px;
         }
 
-        .btn-loja-item:hover { background: #f39c12; }
-
         .btn-fechar {
             background: #e74c3c;
             position: absolute;
@@ -247,8 +220,6 @@
             padding: 5px 10px;
             font-size: 0.9rem;
         }
-
-        .btn-fechar:hover { background: #c0392b; }
 
         /* LOJA */
         #loja-itens {
@@ -268,24 +239,19 @@
             align-items: center;
         }
 
-        .item-loja span {
-            font-size: 0.9rem;
-            margin-bottom: 5px;
-        }
-
         /* INSTRUÇÕES */
         #instrucoes {
             margin-top: 15px;
             text-align: center;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             max-width: 400px;
         }
 
         /* ANIMAÇÕES */
         @keyframes pulo {
             0% { bottom: 20px; }
-            40% { bottom: 110px; } /* Pulo mais alto e rápido */
-            60% { bottom: 110px; }
+            30% { bottom: 110px; }
+            70% { bottom: 110px; }
             100% { bottom: 20px; }
         }
 
@@ -319,27 +285,20 @@
         </div>
     </div>
 
-    <div id="jogo" class="fase1">
-        <div id="chao" class="chao-fase1"></div>
-        <div class="lua lua-fase1"></div>
+    <div id="jogo">
+        <div id="chao"></div>
+        <div class="lua"></div>
         <div id="personagem">
             <div id="cabeca"></div>
-            <div id="corpo" class="corpo-fase1"></div>
+            <div id="corpo"></div>
         </div>
 
         <!-- TELA DE INÍCIO -->
         <div id="tela-inicio" class="tela-overlay">
             <h1>PULA MONSTRO!</h1>
-            <p>• ESPAÇO/TOQUE para pular (rápido e responsivo)</p>
-            <p>• Colete moedas e compre na loja!</p>
-            <button id="btn-iniciar">INICIAR AVENTURA</button>
-        </div>
-
-        <!-- TELA DE FASE -->
-        <div id="tela-fase" class="tela-overlay">
-            <h1 id="titulo-fase">FASE 2</h1>
-            <p id="desc-fase">Monstros mais rápidos!</p>
-            <button id="btn-continuar">CONTINUAR</button>
+            <p>• TOQUE NA TELA PARA PULAR</p>
+            <p>• COLETE MOEDAS E COMPRE NA LOJA!</p>
+            <button id="btn-iniciar">INICIAR</button>
         </div>
 
         <!-- TELA DE FIM -->
@@ -353,32 +312,16 @@
 
         <!-- TELA DA LOJA -->
         <div id="tela-loja" class="tela-overlay">
-            <h1>LOJA NOTURNA</h1>
-            <p>Moedas disponíveis: <span id="moedas-loja">0</span></p>
+            <h1>LOJA</h1>
+            <p>Moedas: <span id="moedas-loja">0</span></p>
             <div id="loja-itens">
                 <div class="item-loja">
-                    <span>❤️ Vida Extra - 15 moedas</span>
+                    <span>❤️ Vida Extra - 15</span>
                     <button class="btn-loja-item" data-item="vida" data-preco="15">COMPRAR</button>
                 </div>
                 <div class="item-loja">
-                    <span>💙 Escudo Inicial - 20 moedas</span>
+                    <span>💙 Escudo Inicial - 20</span>
                     <button class="btn-loja-item" data-item="escudo" data-preco="20">COMPRAR</button>
-                </div>
-                <div class="item-loja">
-                    <span>💜 Velocidade Boost - 25 moedas</span>
-                    <button class="btn-loja-item" data-item="velocidade" data-preco="25">COMPRAR</button>
-                </div>
-                <div class="item-loja">
-                    <span>💚 Moedas Duplas - 30 moedas</span>
-                    <button class="btn-loja-item" data-item="duplo" data-preco="30">COMPRAR</button>
-                </div>
-                <div class="item-loja">
-                    <span>💪 Pulo Mais Alto - 35 moedas</span>
-                    <button class="btn-loja-item" data-item="pulo" data-preco="35">COMPRAR</button>
-                </div>
-                <div class="item-loja">
-                    <span>✨ Invencibilidade Curta - 40 moedas</span>
-                    <button class="btn-loja-item" data-item="invencibilidade" data-preco="40">COMPRAR</button>
                 </div>
             </div>
             <button class="btn-fechar" id="btn-fechar-loja">FECHAR</button>
@@ -386,9 +329,120 @@
     </div>
 
     <div id="instrucoes">
-        <p>💚 Vida - 💛 Moeda - 💙 Escudo - 💜 Velocidade - 💚 Moedas Duplas</p>
-        <p>Acesse a loja entre jogadas para melhorar seu personagem!</p>
+        <p>💚 Vida - 💛 Moeda - 💙 Escudo</p>
+        <p>Jogo otimizado para celular!</p>
     </div>
 
-    <!-- EFEITOS SONOROS -->
-    <audio id="som-pulo" src="https://cdn.pixabay.com/download/audio/202
+    <script>
+        // ELEMENTOS PRINCIPAIS
+        const jogo = document.getElementById('jogo');
+        const personagem = document.getElementById('personagem');
+        const vidasElementos = document.querySelectorAll('.vida');
+        const pontosTexto = document.getElementById('pontos');
+        const moedasTexto = document.getElementById('moedas');
+        const recordeTexto = document.getElementById('recorde');
+        const pontosFimTexto = document.getElementById('pontos-fim');
+        const moedasFimTexto = document.getElementById('moedas-fim');
+        const novoRecordeTexto = document.getElementById('novo-recorde');
+        const moedasLojaTexto = document.getElementById('moedas-loja');
+
+        const btnIniciar = document.getElementById('btn-iniciar');
+        const btnReiniciar = document.getElementById('btn-reiniciar');
+        const btnLoja = document.getElementById('btn-loja');
+        const btnFecharLoja = document.getElementById('btn-fechar-loja');
+        const btnsLojaItens = document.querySelectorAll('.btn-loja-item');
+
+        const telaInicio = document.getElementById('tela-inicio');
+        const telaFim = document.getElementById('tela-fim');
+        const telaLoja = document.getElementById('tela-loja');
+
+        // VARIÁVEIS DO JOGO
+        let pontos = 0;
+        let moedas = 0;
+        let vidas = 3;
+        let velocidade = 3;
+        let jogoAtivo = false;
+        let recorde = localStorage.getItem('pulaMonstroRecorde') || 0;
+        recordeTexto.textContent = recorde;
+
+        // CONFIGURAÇÕES INICIAIS
+        let itemComprado = '';
+
+        // CRIAR ESTRELAS
+        function criarEstrelas() {
+            for(let i=0; i<40; i++) {
+                const estrela = document.createElement('div');
+                estrela.classList.add('estrela');
+                estrela.style.left = `${Math.random()*100}%`;
+                estrela.style.top = `${Math.random()*80}%`;
+                estrela.style.animationDelay = `${Math.random()*2}s`;
+                jogo.appendChild(estrela);
+            }
+        }
+
+        // PULAR - RESPONSIVO
+        function pular() {
+            if(!jogoAtivo) return;
+            if(personagem.style.animation) return;
+            personagem.style.animation = 'pulo 0.6s ease';
+            setTimeout(() => personagem.style.animation = '', 600);
+        }
+
+        // CRIAR OBSTÁCULOS
+        function criarObstaculo() {
+            if(!jogoAtivo) return;
+
+            const obstaculo = document.createElement('div');
+            obstaculo.classList.add('obstaculo');
+            const tipo = Math.floor(Math.random()*2) + 1;
+            obstaculo.classList.add(`monstro${tipo}`);
+            obstaculo.style.left = '100%';
+            jogo.appendChild(obstaculo);
+
+            const mover = setInterval(() => {
+                if(!jogoAtivo) {
+                    clearInterval(mover);
+                    return;
+                }
+
+                let pos = parseFloat(obstaculo.style.left) || 100;
+                if(pos < -5) {
+                    jogo.removeChild(obstaculo);
+                    clearInterval(mover);
+                    pontos++;
+                    pontosTexto.textContent = pontos;
+                } else {
+                    obstaculo.style.left = (pos - velocidade) + '%';
+                }
+
+                // VERIFICAR COLISÃO
+                const pRect = personagem.getBoundingClientRect();
+                const oRect = obstaculo.getBoundingClientRect();
+                const jRect = jogo.getBoundingClientRect();
+
+                const pTop = pRect.top - jRect.top;
+                const pBottom = pRect.bottom - jRect.top;
+                const pLeft = pRect.left - jRect.left;
+                const pRight = pRect.right - jRect.left;
+
+                const oTop = oRect.top - jRect.top;
+                const oBottom = oRect.bottom - jRect.top;
+                const oLeft = oRect.left - jRect.left;
+                const oRight = oRect.right - jRect.left;
+
+                if(pBottom > oTop && pTop < oBottom && pRight > oLeft && pLeft < oRight) {
+                    if(itemComprado === 'escudo') {
+                        itemComprado = '';
+                        personagem.classList.remove('personagem-escudo');
+                        jogo.removeChild(obstaculo);
+                        clearInterval(mover);
+                        return;
+                    }
+
+                    vidas--;
+                    atualizarVidas();
+                    jogo.removeChild(obstaculo);
+                    clearInterval(mover);
+
+                    if(vidas === 0) {
+                       
