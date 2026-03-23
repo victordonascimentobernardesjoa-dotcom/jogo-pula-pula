@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pula Pula - Jogo Simples</title>
+    <title>Pula Monstro - Jogo</title>
     <style>
         /* ESTILO TOTALMENTE LEVE */
         * {
@@ -14,7 +14,7 @@
         }
 
         body {
-            background-color: #1a1a1a;
+            background-color: #0a0a1a;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -28,38 +28,126 @@
             width: 100%;
             max-width: 400px;
             height: 300px;
-            background-color: #87CEEB;
             position: relative;
             overflow: hidden;
             border: 2px solid #fff;
+            background: linear-gradient(#0a0a1a, #1a1a3a);
         }
 
-        /* PERSONAGEM */
+        /* FUNDO NOTURNO */
+        #fundo {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .estrela {
+            width: 2px;
+            height: 2px;
+            background-color: #fff;
+            border-radius: 50%;
+            position: absolute;
+            animation: piscar 2s infinite alternate;
+        }
+
+        #lua {
+            width: 50px;
+            height: 50px;
+            background-color: #f0f0d0;
+            border-radius: 50%;
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            box-shadow: 0 0 20px rgba(240, 240, 208, 0.8);
+        }
+
+        #lua-mancha {
+            width: 10px;
+            height: 10px;
+            background-color: #e0e0b0;
+            border-radius: 50%;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+
+        /* PERSONAGEM - GAROTO */
         #personagem {
             width: 40px;
             height: 40px;
-            background-color: #FF4500;
             position: absolute;
             bottom: 20px;
             left: 50px;
+        }
+
+        #cabeca {
+            width: 20px;
+            height: 20px;
+            background-color: #f5cba7;
+            border-radius: 50%;
+            position: absolute;
+            top: 0;
+            left: 10px;
+        }
+
+        #corpo {
+            width: 15px;
+            height: 20px;
+            background-color: #2980b9;
+            position: absolute;
+            top: 20px;
+            left: 12px;
+        }
+
+        /* OBSTÁCULO - MONSTRO */
+        .obstaculo {
+            width: 35px;
+            height: 30px;
+            position: absolute;
+            bottom: 20px;
+        }
+
+        #cabeca-monstro {
+            width: 35px;
+            height: 20px;
+            background-color: #27ae60;
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+            position: absolute;
+            top: 0;
+        }
+
+        #olhos-monstro {
+            display: flex;
+            justify-content: space-between;
+            padding: 0 5px;
+            margin-top: 5px;
+        }
+
+        .olho {
+            width: 5px;
+            height: 5px;
+            background-color: #000;
             border-radius: 50%;
         }
 
-        /* OBSTÁCULO */
-        .obstaculo {
-            width: 30px;
-            height: 30px;
-            background-color: #228B22;
+        #corpo-monstro {
+            width: 25px;
+            height: 10px;
+            background-color: #2ecc71;
+            margin: 0 auto;
             position: absolute;
-            bottom: 20px;
-            border-radius: 10px;
+            bottom: 0;
+            left: 5px;
         }
 
         /* CHÃO */
         #chao {
             width: 100%;
             height: 20px;
-            background-color: #CD853F;
+            background-color: #34495e;
             position: absolute;
             bottom: 0;
         }
@@ -70,6 +158,7 @@
             font-size: 1.5rem;
             margin-bottom: 15px;
             font-weight: bold;
+            text-shadow: 0 0 5px #fff;
         }
 
         /* TELA DE INÍCIO/FIM */
@@ -94,17 +183,18 @@
 
         button {
             padding: 10px 25px;
-            background-color: #FF4500;
+            background-color: #e67e22;
             border: none;
             border-radius: 5px;
             color: #fff;
             font-size: 1rem;
             cursor: pointer;
             margin-top: 20px;
+            box-shadow: 0 0 10px rgba(230, 126, 34, 0.8);
         }
 
         button:hover {
-            background-color: #FF6347;
+            background-color: #f39c12;
         }
 
         /* INSTRUÇÕES */
@@ -115,18 +205,42 @@
             text-align: center;
             max-width: 400px;
         }
+
+        /* ANIMAÇÕES */
+        @keyframes pulo {
+            0% { bottom: 20px; }
+            50% { bottom: 100px; }
+            100% { bottom: 20px; }
+        }
+
+        @keyframes piscar {
+            0% { opacity: 0.3; }
+            100% { opacity: 1; }
+        }
     </style>
 </head>
 <body>
     <div id="pontuacao">Pontos: 0</div>
     <div id="jogo-tela">
+        <!-- FUNDO NOTURNO -->
+        <div id="fundo"></div>
+        <div id="lua">
+            <div id="lua-mancha"></div>
+        </div>
+        
+        <!-- CHÃO -->
         <div id="chao"></div>
-        <div id="personagem"></div>
+        
+        <!-- PERSONAGEM - GAROTO -->
+        <div id="personagem">
+            <div id="cabeca"></div>
+            <div id="corpo"></div>
+        </div>
         
         <!-- TELA DE INÍCIO -->
         <div id="tela-inicio">
-            <h1>PULA PULA!</h1>
-            <p>Clique ou toque para pular</p>
+            <h1>PULA MONSTRO!</h1>
+            <p>PC: Tecla ESPAÇO | Celular: Toque na tela</p>
             <button id="btn-iniciar">Iniciar Jogo</button>
         </div>
 
@@ -138,9 +252,8 @@
         </div>
     </div>
     <div id="instrucoes">
-        <p>• Notebook: Clique em qualquer lugar da tela para pular</p>
-        <p>• Celular: Toque em qualquer lugar da tela para pular</p>
-        <p>• Fuja dos obstáculos para ganhar pontos!</p>
+        <p>• Fuja dos monstros para ganhar pontos!</p>
+        <p>• Quanto mais pontos, mais rápido ficam os monstros!</p>
     </div>
 
     <script>
@@ -153,6 +266,7 @@
         const pontosFinais = document.getElementById('pontos-finais');
         const btnIniciar = document.getElementById('btn-iniciar');
         const btnReiniciar = document.getElementById('btn-reiniciar');
+        const fundo = document.getElementById('fundo');
 
         // VARIÁVEIS DO JOGO
         let pontuacao = 0;
@@ -161,25 +275,48 @@
         let intervaloObstaculos;
         let intervaloPontos;
 
+        // CRIAR ESTRELAS NO FUNDO
+        function criarEstrelas() {
+            for (let i = 0; i < 30; i++) {
+                const estrela = document.createElement('div');
+                estrela.classList.add('estrela');
+                estrela.style.left = Math.random() * 100 + '%';
+                estrela.style.top = Math.random() * 80 + '%';
+                estrela.style.animationDelay = Math.random() * 2 + 's';
+                fundo.appendChild(estrela);
+            }
+        }
+
         // FUNÇÃO PARA PULAR
         function pular() {
             if (!jogoRodando) return;
             
-            if (personagem.classList != 'pulo') {
-                personagem.classList.add('pulo');
-                
+            if (!personagem.style.animation) {
+                personagem.style.animation = 'pulo 0.5s linear';
                 setTimeout(() => {
-                    personagem.classList.remove('pulo');
+                    personagem.style.animation = '';
                 }, 500);
             }
         }
 
-        // CRIAR OBSTÁCULOS
+        // CRIAR OBSTÁCULOS - MONSTROS
         function criarObstaculo() {
             if (!jogoRodando) return;
 
             const obstaculo = document.createElement('div');
             obstaculo.classList.add('obstaculo');
+            
+            // Estrutura do monstro
+            obstaculo.innerHTML = `
+                <div id="cabeca-monstro">
+                    <div id="olhos-monstro">
+                        <div class="olho"></div>
+                        <div class="olho"></div>
+                    </div>
+                </div>
+                <div id="corpo-monstro"></div>
+            `;
+
             jogoTela.appendChild(obstaculo);
 
             // Posição aleatória na tela
@@ -197,7 +334,7 @@
                 obstaculo.style.left = posicaoX + 'px';
 
                 // Remover obstáculo quando sair da tela
-                if (posicaoX < -30) {
+                if (posicaoX < -35) {
                     clearInterval(moverObstaculo);
                     jogoTela.removeChild(obstaculo);
                 }
@@ -252,20 +389,14 @@
             telaFim.style.display = 'none';
             jogoRodando = true;
 
-            // Adicionar estilo de pulo
-            document.styleSheets[0].insertRule(`
-                .pulo {
-                    animation: pulo 0.5s linear;
-                }
-            `, document.styleSheets[0].cssRules.length);
+            // Remover monstros antigos
+            const obstaculosAntigos = document.querySelectorAll('.obstaculo');
+            obstaculosAntigos.forEach(obs => jogoTela.removeChild(obs));
 
-            document.styleSheets[0].insertRule(`
-                @keyframes pulo {
-                    0% { bottom: 20px; }
-                    50% { bottom: 100px; }
-                    100% { bottom: 20px; }
-                }
-            `, document.styleSheets[0].cssRules.length);
+            // Criar estrelas se não existirem
+            if (fundo.children.length === 0) {
+                criarEstrelas();
+            }
 
             // Iniciar criação de obstáculos e pontuação
             intervaloObstaculos = setInterval(criarObstaculo, 2000);
@@ -277,10 +408,6 @@
             jogoRodando = false;
             clearInterval(intervaloObstaculos);
             clearInterval(intervaloPontos);
-            
-            // Remover todos os obstáculos
-            const obstaculos = document.querySelectorAll('.obstaculo');
-            obstaculos.forEach(obs => jogoTela.removeChild(obs));
 
             // Mostrar tela de fim
             pontosFinais.textContent = `Pontos: ${pontuacao}`;
@@ -291,12 +418,25 @@
         btnIniciar.addEventListener('click', iniciarJogo);
         btnReiniciar.addEventListener('click', iniciarJogo);
 
-        // Clique/touch para pular
-        document.addEventListener('click', pular);
+        // Pular com tecla ESPAÇO (PC)
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space') {
+                e.preventDefault();
+                pular();
+            }
+        });
+
+        // Pular com toque (celular)
         document.addEventListener('touchstart', (e) => {
             e.preventDefault();
             pular();
         });
+
+        // Clique na tela também pula (PC opcional)
+        document.addEventListener('click', pular);
+
+        // Criar estrelas ao carregar a página
+        criarEstrelas();
     </script>
 </body>
 </html>
