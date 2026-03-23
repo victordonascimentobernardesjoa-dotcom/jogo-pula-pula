@@ -2,324 +2,102 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Pula Monstro Simples</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animação Simples com JS</title>
     <style>
         body {
-            margin: 0;
-            padding: 0;
-            background: #0a0a1a;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             min-height: 100vh;
-            color: white;
+            background: #f0f0f0;
+            margin: 0;
             font-family: Arial;
         }
 
-        #jogo {
-            width: 90%;
-            max-width: 400px;
-            height: 300px;
-            border: 2px solid white;
-            position: relative;
-            overflow: hidden;
-            background: linear-gradient(#0a0a1a, #1a1a3a);
-        }
-
-        #personagem {
-            width: 40px;
-            height: 40px;
-            position: absolute;
-            bottom: 20px;
-            left: 50px;
-        }
-
-        #personagem div {
-            width: 20px;
-            height: 20px;
-            background: #f5cba7;
-            border-radius: 50%;
-            margin: 0 auto;
-        }
-
-        #personagem div + div {
-            width: 15px;
-            height: 20px;
+        #elemento {
+            width: 100px;
+            height: 100px;
             background: #2980b9;
-            border-radius: 0;
-            margin-top: 2px;
-        }
-
-        .monstro {
-            width: 35px;
-            height: 30px;
-            background: #27ae60;
-            border-top-left-radius: 15px;
-            border-top-right-radius: 15px;
-            position: absolute;
-            bottom: 20px;
-            right: -35px;
-        }
-
-        .moeda {
-            width: 25px;
-            height: 25px;
-            background: #f1c40f;
-            border-radius: 50%;
-            position: absolute;
-            bottom: 55px;
-            right: -25px;
-            animation: girar 1s infinite linear;
-        }
-
-        #chao {
-            width: 100%;
-            height: 20px;
-            background: #34495e;
-            position: absolute;
-            bottom: 0;
-        }
-
-        #info {
-            margin-bottom: 10px;
-            font-size: 1.1rem;
-            display: flex;
-            gap: 20px;
-        }
-
-        #tela-inicio {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.8);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-        }
-
-        #tela-fim {
-            display: none;
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.8);
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-        }
-
-        button {
-            padding: 10px 25px;
-            background: #e67e22;
-            border: none;
-            border-radius: 8px;
-            color: white;
-            font-size: 1rem;
+            /* Faz a transição ficar suave */
+            transition: all 0.5s ease;
             cursor: pointer;
-            margin-top: 20px;
+            margin-bottom: 20px;
         }
 
-        /* Pulo MUITO MAIS RÁPIDO */
-        @keyframes pulo {
-            0% { bottom: 20px; }
-            25% { bottom: 100px; } /* Chega no topo rápido */
-            75% { bottom: 100px; } /* Fica pouco tempo no topo */
-            100% { bottom: 20px; } /* Desce rápido */
-        }
-
-        @keyframes girar {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        p {
+            color: #333;
+            font-size: 1.1rem;
         }
     </style>
 </head>
 <body>
-    <div id="info">
-        <span>Pontos: <span id="pontos">0</span></span>
-        <span>Moedas: <span id="moedas">0</span></span>
-    </div>
-
-    <div id="jogo">
-        <div id="chao"></div>
-        <div id="personagem">
-            <div></div>
-            <div></div>
-        </div>
-
-        <div id="tela-inicio">
-            <h1>PULA MONSTRO!</h1>
-            <p>TOQUE NA TELA OU APERTE ESPAÇO</p>
-            <button id="iniciar">JOGAR AGORA</button>
-        </div>
-
-        <div id="tela-fim">
-            <h1>FIM!</h1>
-            <p>Pontos: <span id="pontos-fim">0</span></p>
-            <p>Moedas: <span id="moedas-fim">0</span></p>
-            <button id="reiniciar">TENTAR NOVAMENTE</button>
-        </div>
-    </div>
+    <div id="elemento"></div>
+    <p>Clique no elemento ou na tela para mudá-lo!</p>
 
     <script>
-        // ELEMENTOS
-        const jogo = document.getElementById('jogo');
-        const personagem = document.getElementById('personagem');
-        const btnIniciar = document.getElementById('iniciar');
-        const btnReiniciar = document.getElementById('reiniciar');
-        const telaInicio = document.getElementById('tela-inicio');
-        const telaFim = document.getElementById('tela-fim');
-        const pontosTexto = document.getElementById('pontos');
-        const moedasTexto = document.getElementById('moedas');
-        const pontosFimTexto = document.getElementById('pontos-fim');
-        const moedasFimTexto = document.getElementById('moedas-fim');
+        // Seleciona o elemento que vamos animar
+        const elemento = document.getElementById('elemento');
+        const cores = ['#2980b9', '#e74c3c', '#2ecc71', '#f1c40f', '#9b59b6'];
+        const formas = ['square', 'circle', 'triangle', 'rectangle'];
 
-        // VARIÁVEIS
-        let pontos = 0;
-        let moedas = 0;
-        let jogoAtivo = false;
-        let velocidade = 3;
+        // Função que cria a animação
+        function animar() {
+            // Muda a posição aleatoriamente na tela
+            const posX = Math.random() * (window.innerWidth - 100);
+            const posY = Math.random() * (window.innerHeight - 100);
+            elemento.style.position = 'absolute';
+            elemento.style.left = `${posX}px`;
+            elemento.style.top = `${posY}px`;
 
-        // FUNÇÃO DE PULAR - INSTANTÂNEA
-        function pular() {
-            if(!jogoAtivo) return;
-            personagem.style.animation = 'none'; // Reseta a animação instantaneamente
-            void personagem.offsetWidth; // Força o navegador a reconhecer a mudança
-            personagem.style.animation = 'pulo 0.4s ease'; // Pulo rápido (0.4s no total)
-        }
+            // Muda a cor
+            const corAleatoria = cores[Math.floor(Math.random() * cores.length)];
+            elemento.style.background = corAleatoria;
 
-        // CRIAR MONSTROS
-        function criarMonstro() {
-            if(!jogoAtivo) return;
-
-            const monstro = document.createElement('div');
-            monstro.classList.add('monstro');
-            jogo.appendChild(monstro);
-
-            const mover = setInterval(() => {
-                if(!jogoAtivo) {
-                    clearInterval(mover);
-                    return;
-                }
-
-                let pos = parseFloat(monstro.style.right) || -35;
-                if(pos > jogo.offsetWidth) {
-                    jogo.removeChild(monstro);
-                    clearInterval(mover);
-                    pontos++;
-                    pontosTexto.textContent = pontos;
-                } else {
-                    monstro.style.right = (pos + velocidade) + 'px';
-                }
-
-                // COLISÃO
-                const p = personagem.getBoundingClientRect();
-                const m = monstro.getBoundingClientRect();
-
-                if(p.bottom > m.top && p.top < m.bottom && p.right > m.left && p.left < m.right) {
-                    jogoAtivo = false;
-                    pontosFimTexto.textContent = pontos;
-                    moedasFimTexto.textContent = moedas;
-                    telaFim.style.display = 'flex';
-                    clearInterval(mover);
-                    clearInterval(intervaloMonstros);
-                    clearInterval(intervaloMoedas);
-                }
-            }, 10);
-        }
-
-        // CRIAR MOEDAS
-        function criarMoeda() {
-            if(!jogoAtivo) return;
-
-            const moeda = document.createElement('div');
-            moeda.classList.add('moeda');
-            jogo.appendChild(moeda);
-
-            const mover = setInterval(() => {
-                if(!jogoAtivo) {
-                    clearInterval(mover);
-                    return;
-                }
-
-                let pos = parseFloat(moeda.style.right) || -25;
-                if(pos > jogo.offsetWidth) {
-                    jogo.removeChild(moeda);
-                    clearInterval(mover);
-                } else {
-                    moeda.style.right = (pos + velocidade) + 'px';
-                }
-
-                // COLETA
-                const p = personagem.getBoundingClientRect();
-                const m = moeda.getBoundingClientRect();
-
-                if(p.bottom > m.top && p.top < m.bottom && p.right > m.left && p.left < m.right) {
-                    jogo.removeChild(moeda);
-                    clearInterval(mover);
-                    moedas++;
-                    moedasTexto.textContent = moedas;
-                }
-            }, 10);
-        }
-
-        // INICIAR JOGO
-        function iniciar() {
-            pontos = 0;
-            moedas = 0;
-            velocidade = 3;
-            jogoAtivo = true;
-
-            pontosTexto.textContent = 0;
-            moedasTexto.textContent = 0;
-            telaInicio.style.display = 'none';
-            telaFim.style.display = 'none';
-
-            // LIMPAR ELEMENTOS
-            const elementos = jogo.querySelectorAll('.monstro, .moeda');
-            elementos.forEach(el => el.remove());
-
-            // INICIAR
-            intervaloMonstros = setInterval(criarMonstro, 1800);
-            intervaloMoedas = setInterval(criarMoeda, 3000);
-
-            // AUMENTAR DIFICULDADE
-            setInterval(() => {
-                if(jogoAtivo && velocidade < 6) velocidade += 0.2;
-            }, 8000);
-        }
-
-        // EVENTOS - RESPONDEM INSTANTANEAMENTE
-        btnIniciar.addEventListener('click', iniciar);
-        btnReiniciar.addEventListener('click', iniciar);
-
-        // PULAR COM ESPAÇO
-        document.addEventListener('keydown', e => {
-            if(e.code === 'Space') {
-                e.preventDefault();
-                pular();
+            // Muda a forma
+            const formaAleatoria = formas[Math.floor(Math.random() * formas.length)];
+            switch(formaAleatoria) {
+                case 'square':
+                    elemento.style.width = '100px';
+                    elemento.style.height = '100px';
+                    elemento.style.borderRadius = '0';
+                    elemento.style.clipPath = 'none';
+                    break;
+                case 'circle':
+                    elemento.style.width = '100px';
+                    elemento.style.height = '100px';
+                    elemento.style.borderRadius = '50%';
+                    elemento.style.clipPath = 'none';
+                    break;
+                case 'triangle':
+                    elemento.style.width = '100px';
+                    elemento.style.height = '100px';
+                    elemento.style.borderRadius = '0';
+                    elemento.style.clipPath = 'polygon(50% 0%, 0% 100%, 100% 100%)';
+                    break;
+                case 'rectangle':
+                    elemento.style.width = '150px';
+                    elemento.style.height = '80px';
+                    elemento.style.borderRadius = '10px';
+                    elemento.style.clipPath = 'none';
+                    break;
             }
+
+            // Adiciona um girozinho
+            const rotacao = Math.random() * 360;
+            elemento.style.transform = `rotate(${rotacao}deg)`;
+        }
+
+        // Chama a animação ao clicar no elemento ou na tela
+        elemento.addEventListener('click', animar);
+        document.addEventListener('click', (e) => {
+            // Se clicar fora do elemento, também anima
+            if(e.target !== elemento) animar();
         });
 
-        // PULAR COM TOQUE
-        document.addEventListener('touchstart', e => {
-            e.preventDefault();
-            pular();
-        });
-
-        // PULAR COM CLIQUE
-        document.addEventListener('click', e => {
-            // Não pula se clicar nos botões
-            if(!e.target.tagName === 'BUTTON') pular();
-        });
+        // Anima automaticamente ao carregar a página
+        animar();
     </script>
 </body>
 </html>
