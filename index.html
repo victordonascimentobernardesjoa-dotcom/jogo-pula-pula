@@ -329,9 +329,7 @@
     </div>
 
     <script>
-        // Espera o DOM carregar completamente
         document.addEventListener('DOMContentLoaded', function() {
-            // Elementos do jogo
             const jogoTela = document.getElementById('jogo-tela');
             const personagem = document.getElementById('personagem');
             const fundo = document.getElementById('fundo');
@@ -355,7 +353,6 @@
             const telaFase = document.getElementById('tela-fase');
             const tituloFase = document.getElementById('titulo-fase');
 
-            // Variáveis do jogo
             let pontos = 0;
             let moedas = 0;
             let fase = 1;
@@ -366,11 +363,9 @@
             let intervaloObstaculos;
             let intervaloMoedas;
 
-            // Música de fundo
             const musica = new Audio('https://cdn.pixabay.com/download/audio/2022/01/18/audio_183365d938.mp3?filename=spooky-ambience-100152.mp3');
             musica.loop = true;
 
-            // Função para criar estrelas
             function criarEstrelas() {
                 fundo.innerHTML = '';
                 const qtdEstrelas = 30 + fase * 10;
@@ -384,16 +379,14 @@
                 }
             }
 
-            // Função para pular
             function pular() {
                 if(personagem.classList.contains('pulo')) return;
-                personagem.classList.add('pulo');
+                personagem.style.animation = 'pulo 0.7s ease';
                 setTimeout(() => {
-                    personagem.classList.remove('pulo');
+                    personagem.style.animation = '';
                 }, 700);
             }
 
-            // Função para criar obstáculos
             function criarObstaculo() {
                 if(!jogoRodando) return;
 
@@ -424,9 +417,3 @@
                     const posX = parseFloat(obstaculo.style.left) || 400;
                     if(posX < -35) {
                         jogoTela.removeChild(obstaculo);
-                        clearInterval(moverObstaculo);
-                    } else {
-                        obstaculo.style.left = `${posX - velocidade}px`;
-                    }
-
-                    // Verificar colis
