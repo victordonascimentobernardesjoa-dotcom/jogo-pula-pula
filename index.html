@@ -3,81 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pula Monstro - Aventura Noturna</title>
+    <title>Pula Monstro - Jogo Simples</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            touch-action: manipulation;
         }
 
         body {
-            background-color: #0a0a1a;
+            background: #0a0a1a;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             min-height: 100vh;
-            font-family: Arial, sans-serif;
+            font-family: Arial;
         }
 
-        #jogo-tela {
+        #jogo {
             width: 100%;
             max-width: 400px;
             height: 300px;
+            background: linear-gradient(#0a0a1a, #1a1a3a);
             position: relative;
+            border: 2px solid white;
             overflow: hidden;
-            border: 2px solid #fff;
         }
-
-        .fase1 { background: linear-gradient(#0a0a1a, #1a1a3a); }
-        .fase2 { background: linear-gradient(#1a0a1a, #3a1a3a); }
-        .fase3 { background: linear-gradient(#0a1a1a, #1a3a3a); }
-
-        #fundo {
-            width: 100%;
-            height: 100%;
-            position: absolute;
-            top: 0;
-            left: 0;
-        }
-
-        .estrela {
-            width: 2px;
-            height: 2px;
-            background-color: #fff;
-            border-radius: 50%;
-            position: absolute;
-            animation: piscar 2s infinite alternate;
-        }
-
-        .lua {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            box-shadow: 0 0 20px rgba(240, 240, 208, 0.8);
-        }
-
-        .lua-fase1 { background-color: #f0f0d0; }
-        .lua-fase2 { background-color: #d0c0f0; }
-        .lua-fase3 { background-color: #d0f0e0; }
-
-        .lua-mancha {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            position: absolute;
-            top: 10px;
-            right: 10px;
-        }
-
-        .mancha-fase1 { background-color: #e0e0b0; }
-        .mancha-fase2 { background-color: #b0a0e0; }
-        .mancha-fase3 { background-color: #b0e0d0; }
 
         #personagem {
             width: 40px;
@@ -85,194 +37,94 @@
             position: absolute;
             bottom: 20px;
             left: 50px;
-            z-index: 10;
         }
 
-        #cabeca-personagem {
+        #personagem div {
             width: 20px;
             height: 20px;
-            background-color: #f5cba7;
+            background: #f5cba7;
             border-radius: 50%;
-            position: absolute;
-            top: 0;
-            left: 10px;
+            margin: 0 auto;
         }
 
-        #corpo-personagem {
+        #personagem div + div {
             width: 15px;
             height: 20px;
-            position: absolute;
-            bottom: 0;
-            left: 12px;
+            background: #2980b9;
+            border-radius: 0;
+            margin-top: 2px;
         }
 
-        .corpo-fase1 { background-color: #2980b9; }
-        .corpo-fase2 { background-color: #8e44ad; }
-        .corpo-fase3 { background-color: #16a085; }
-
-        .obstaculo {
+        .monstro {
             width: 35px;
             height: 30px;
+            background: #27ae60;
             position: absolute;
             bottom: 20px;
-            z-index: 5;
-        }
-
-        .monstro1 #cabeca-monstro { background-color: #27ae60; }
-        .monstro1 #corpo-monstro { background-color: #2ecc71; }
-        .monstro1 .olho { background-color: #000; }
-
-        .monstro2 #cabeca-monstro { background-color: #c0392b; }
-        .monstro2 #corpo-monstro { background-color: #e74c3c; }
-        .monstro2 .olho { background-color: #fff; }
-
-        .monstro3 #cabeca-monstro { background-color: #6c3483; }
-        .monstro3 #corpo-monstro { background-color: #8e44ad; }
-        .monstro3 .olho { background-color: #f1c40f; }
-
-        #cabeca-monstro {
-            width: 35px;
-            height: 20px;
             border-top-left-radius: 15px;
             border-top-right-radius: 15px;
-            position: absolute;
-            top: 0;
-        }
-
-        #olhos-monstro {
-            display: flex;
-            justify-content: space-between;
-            padding: 0 5px;
-            margin-top: 5px;
-        }
-
-        .olho {
-            width: 5px;
-            height: 5px;
-            border-radius: 50%;
-        }
-
-        #corpo-monstro {
-            width: 25px;
-            height: 10px;
-            margin: 0 auto;
-            position: absolute;
-            bottom: 0;
-            left: 5px;
         }
 
         .moeda {
             width: 20px;
             height: 20px;
-            background-color: #f1c40f;
+            background: #f1c40f;
             border-radius: 50%;
             position: absolute;
             bottom: 50px;
-            z-index: 8;
             animation: girar 1s infinite linear;
-            box-shadow: 0 0 10px rgba(241, 196, 15, 0.8);
-        }
-
-        .moeda::before {
-            content: '';
-            width: 12px;
-            height: 12px;
-            background-color: #f39c12;
-            border-radius: 50%;
-            position: absolute;
-            top: 4px;
-            left: 4px;
         }
 
         #chao {
             width: 100%;
             height: 20px;
+            background: #34495e;
             position: absolute;
             bottom: 0;
         }
 
-        .chao-fase1 { background-color: #34495e; }
-        .chao-fase2 { background-color: #5d4037; }
-        .chao-fase3 { background-color: #2c3e50; }
-
-        #info-jogo {
-            display: flex;
-            justify-content: space-between;
-            width: 100%;
-            max-width: 400px;
-            margin-bottom: 10px;
-        }
-
-        #info-jogo div {
-            color: #fff;
+        #info {
+            color: white;
             font-size: 1.2rem;
-            font-weight: bold;
-            text-shadow: 0 0 5px #fff;
+            margin-bottom: 10px;
+            display: flex;
+            gap: 20px;
         }
 
-        #btn-audio {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            background-color: rgba(0,0,0,0.5);
-            border: none;
-            color: #fff;
-            padding: 5px 10px;
-            border-radius: 5px;
-            cursor: pointer;
-            z-index: 20;
-        }
-
-        .tela-overlay {
+        #tela-inicio, #tela-fim {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0,0,0,0.8);
+            background: rgba(0,0,0,0.8);
+            color: white;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            color: #fff;
             text-align: center;
-            z-index: 30;
         }
 
-        #tela-inicio { display: flex; }
-        #tela-fim { display: none; }
-        #tela-fase { display: none; }
+        #tela-fim {
+            display: none;
+        }
 
         button {
             padding: 10px 25px;
+            background: #e67e22;
             border: none;
             border-radius: 5px;
-            color: #fff;
+            color: white;
             font-size: 1rem;
             cursor: pointer;
             margin-top: 20px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.8);
-        }
-
-        .btn-principal { background-color: #e67e22; }
-        .btn-principal:hover { background-color: #f39c12; }
-
-        #instrucoes {
-            color: #fff;
-            margin-top: 15px;
-            text-align: center;
-            max-width: 400px;
         }
 
         @keyframes pulo {
             0% { bottom: 20px; }
             50% { bottom: 100px; }
             100% { bottom: 20px; }
-        }
-
-        @keyframes piscar {
-            0% { opacity: 0.3; }
-            100% { opacity: 1; }
         }
 
         @keyframes girar {
@@ -282,138 +134,201 @@
     </style>
 </head>
 <body>
-    <div id="info-jogo">
-        <div>Pontos: <span id="pontos">0</span></div>
-        <div>Fase: <span id="fase">1</span></div>
-        <div>Moedas: <span id="moedas">0</span></div>
+    <div id="info">
+        <span>Pontos: <span id="pontos">0</span></span>
+        <span>Moedas: <span id="moedas">0</span></span>
     </div>
 
-    <div id="jogo-tela" class="fase1">
-        <button id="btn-audio">🔊 Música</button>
-
-        <div id="fundo"></div>
-        <div class="lua lua-fase1">
-            <div class="lua-mancha mancha-fase1"></div>
-        </div>
-
-        <div id="chao" class="chao-fase1"></div>
-
+    <div id="jogo">
+        <div id="chao"></div>
         <div id="personagem">
-            <div id="cabeca-personagem"></div>
-            <div id="corpo-personagem" class="corpo-fase1"></div>
+            <div></div>
+            <div></div>
         </div>
 
-        <div id="tela-inicio" class="tela-overlay">
+        <div id="tela-inicio">
             <h1>PULA MONSTRO!</h1>
-            <p>PC: Tecla ESPAÇO | Celular: Toque na tela</p>
-            <button id="btn-iniciar" class="btn-principal">Iniciar Jogo</button>
+            <p>ESPAÇO (PC) ou TOQUE (CELULAR)</p>
+            <button id="iniciar">INICIAR</button>
         </div>
 
-        <div id="tela-fim" class="tela-overlay">
-            <h1>Fim de Jogo!</h1>
+        <div id="tela-fim">
+            <h1>FIM DE JOGO!</h1>
             <p>Pontos: <span id="pontos-fim">0</span></p>
             <p>Moedas: <span id="moedas-fim">0</span></p>
-            <button id="btn-reiniciar" class="btn-principal">Jogar Novamente</button>
+            <button id="reiniciar">JOGAR NOVAMENTE</button>
         </div>
-
-        <div id="tela-fase" class="tela-overlay">
-            <h1 id="titulo-fase">FASE 2</h1>
-            <p>Monstros mais rápidos!</p>
-            <button id="btn-continuar" class="btn-principal">Continuar</button>
-        </div>
-    </div>
-
-    <div id="instrucoes">
-        <p>• Fuja dos monstros variados | Colete moedas para pontos extras</p>
-        <p>• 3 fases com cenários diferentes | Aperte ESPAÇO (PC) ou toque (celular) para pular</p>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const jogoTela = document.getElementById('jogo-tela');
-            const personagem = document.getElementById('personagem');
-            const fundo = document.getElementById('fundo');
-            const chao = document.getElementById('chao');
-            const lua = document.querySelector('.lua');
-            const luaMancha = document.querySelector('.lua-mancha');
-            const corpoPersonagem = document.getElementById('corpo-personagem');
-            
-            const btnAudio = document.getElementById('btn-audio');
-            const btnIniciar = document.getElementById('btn-iniciar');
-            const btnReiniciar = document.getElementById('btn-reiniciar');
-            const btnContinuar = document.getElementById('btn-continuar');
-            
-            const pontosTexto = document.getElementById('pontos');
-            const faseTexto = document.getElementById('fase');
-            const moedasTexto = document.getElementById('moedas');
-            const pontosFim = document.getElementById('pontos-fim');
-            const moedasFim = document.getElementById('moedas-fim');
-            const telaInicio = document.getElementById('tela-inicio');
-            const telaFim = document.getElementById('tela-fim');
-            const telaFase = document.getElementById('tela-fase');
-            const tituloFase = document.getElementById('titulo-fase');
+        // ELEMENTOS BASICOS
+        const jogo = document.getElementById('jogo');
+        const personagem = document.getElementById('personagem');
+        const iniciarBtn = document.getElementById('iniciar');
+        const reiniciarBtn = document.getElementById('reiniciar');
+        const telaInicio = document.getElementById('tela-inicio');
+        const telaFim = document.getElementById('tela-fim');
+        const pontosTexto = document.getElementById('pontos');
+        const moedasTexto = document.getElementById('moedas');
+        const pontosFimTexto = document.getElementById('pontos-fim');
+        const moedasFimTexto = document.getElementById('moedas-fim');
 
-            let pontos = 0;
-            let moedas = 0;
-            let fase = 1;
-            let velocidade = 3;
-            let jogoRodando = false;
-            let musicaAtiva = true;
-            let intervaloPontos;
-            let intervaloObstaculos;
-            let intervaloMoedas;
+        // VARIAVEIS DO JOGO
+        let pontos = 0;
+        let moedas = 0;
+        let jogoAtivo = false;
+        let velocidade = 3;
 
-            const musica = new Audio('https://cdn.pixabay.com/download/audio/2022/01/18/audio_183365d938.mp3?filename=spooky-ambience-100152.mp3');
-            musica.loop = true;
+        // FUNCAO DE PULAR
+        function pular() {
+            if(!jogoAtivo) return;
+            if(personagem.style.animation) return;
+            personagem.style.animation = 'pulo 0.7s ease';
+            setTimeout(() => personagem.style.animation = '', 700);
+        }
 
-            function criarEstrelas() {
-                fundo.innerHTML = '';
-                const qtdEstrelas = 30 + fase * 10;
-                for(let i=0; i<qtdEstrelas; i++) {
-                    const estrela = document.createElement('div');
-                    estrela.classList.add('estrela');
-                    estrela.style.left = `${Math.random()*100}%`;
-                    estrela.style.top = `${Math.random()*80}%`;
-                    estrela.style.animationDelay = `${Math.random()*2}s`;
-                    fundo.appendChild(estrela);
+        // CRIAR MONSTROS
+        function criarMonstro() {
+            if(!jogoAtivo) return;
+
+            const monstro = document.createElement('div');
+            monstro.classList.add('monstro');
+            monstro.style.left = '400px';
+            jogo.appendChild(monstro);
+
+            const mover = setInterval(() => {
+                if(!jogoAtivo) {
+                    clearInterval(mover);
+                    return;
                 }
-            }
 
-            function pular() {
-                if(personagem.classList.contains('pulo')) return;
-                personagem.style.animation = 'pulo 0.7s ease';
-                setTimeout(() => {
-                    personagem.style.animation = '';
-                }, 700);
-            }
+                let pos = parseFloat(monstro.style.left) || 400;
+                if(pos < -35) {
+                    jogo.removeChild(monstro);
+                    clearInterval(mover);
+                    pontos++;
+                    pontosTexto.textContent = pontos;
+                } else {
+                    monstro.style.left = (pos - velocidade) + 'px';
+                }
 
-            function criarObstaculo() {
-                if(!jogoRodando) return;
+                // VERIFICAR COLISAO
+                const pRect = personagem.getBoundingClientRect();
+                const mRect = monstro.getBoundingClientRect();
+                const jRect = jogo.getBoundingClientRect();
 
-                const obstaculo = document.createElement('div');
-                obstaculo.classList.add('obstaculo');
-                const tipoMonstro = Math.floor(Math.random()*3) + 1;
-                obstaculo.classList.add(`monstro${tipoMonstro}`);
-                
-                obstaculo.innerHTML = `
-                    <div id="cabeca-monstro">
-                        <div id="olhos-monstro">
-                            <div class="olho"></div>
-                            <div class="olho"></div>
-                        </div>
-                    </div>
-                    <div id="corpo-monstro"></div>
-                `;
+                const pTop = pRect.top - jRect.top;
+                const pBottom = pRect.bottom - jRect.top;
+                const pLeft = pRect.left - jRect.left;
+                const pRight = pRect.right - jRect.left;
 
-                obstaculo.style.left = '400px';
-                jogoTela.appendChild(obstaculo);
+                const mTop = mRect.top - jRect.top;
+                const mBottom = mRect.bottom - jRect.top;
+                const mLeft = mRect.left - jRect.left;
+                const mRight = mRect.right - jRect.left;
 
-                const moverObstaculo = setInterval(() => {
-                    if(!jogoRodando) {
-                        clearInterval(moverObstaculo);
-                        return;
-                    }
+                if(pBottom > mTop && pTop < mBottom && pRight > mLeft && pLeft < mRight) {
+                    jogoAtivo = false;
+                    pontosFimTexto.textContent = pontos;
+                    moedasFimTexto.textContent = moedas;
+                    telaFim.style.display = 'flex';
+                    clearInterval(mover);
+                    clearInterval(intervaloMonstros);
+                    clearInterval(intervaloMoedas);
+                }
+            }, 10);
+        }
 
-                    const posX = parseFloat(obstaculo.style.left) || 400;
-                    if(posX < -35) {
-                        jogoTela.removeChild(obstaculo);
+        // CRIAR MOEDAS
+        function criarMoeda() {
+            if(!jogoAtivo) return;
+
+            const moeda = document.createElement('div');
+            moeda.classList.add('moeda');
+            moeda.style.left = '400px';
+            jogo.appendChild(moeda);
+
+            const mover = setInterval(() => {
+                if(!jogoAtivo) {
+                    clearInterval(mover);
+                    return;
+                }
+
+                let pos = parseFloat(moeda.style.left) || 400;
+                if(pos < -20) {
+                    jogo.removeChild(moeda);
+                    clearInterval(mover);
+                } else {
+                    moeda.style.left = (pos - velocidade) + 'px';
+                }
+
+                // VERIFICAR COLETA
+                const pRect = personagem.getBoundingClientRect();
+                const moRect = moeda.getBoundingClientRect();
+                const jRect = jogo.getBoundingClientRect();
+
+                const pTop = pRect.top - jRect.top;
+                const pBottom = pRect.bottom - jRect.top;
+                const pLeft = pRect.left - jRect.left;
+                const pRight = pRect.right - jRect.left;
+
+                const moTop = moRect.top - jRect.top;
+                const moBottom = moRect.bottom - jRect.top;
+                const moLeft = moRect.left - jRect.left;
+                const moRight = moRect.right - jRect.left;
+
+                if(pBottom > moTop && pTop < moBottom && pRight > moLeft && pLeft < moRight) {
+                    jogo.removeChild(moeda);
+                    clearInterval(mover);
+                    moedas++;
+                    moedasTexto.textContent = moedas;
+                }
+            }, 10);
+        }
+
+        // INICIAR JOGO
+        function iniciarJogo() {
+            pontos = 0;
+            moedas = 0;
+            velocidade = 3;
+            jogoAtivo = true;
+
+            pontosTexto.textContent = 0;
+            moedasTexto.textContent = 0;
+            telaInicio.style.display = 'none';
+            telaFim.style.display = 'none';
+
+            // LIMPAR ELEMENTOS ANTIGOS
+            const elementosAntigos = jogo.querySelectorAll('.monstro, .moeda');
+            elementosAntigos.forEach(el => jogo.removeChild(el));
+
+            // INICIAR INTERVALOS
+            intervaloMonstros = setInterval(criarMonstro, 2000);
+            intervaloMoedas = setInterval(criarMoeda, 4000);
+
+            // AUMENTAR VELOCIDADE
+            setInterval(() => {
+                if(jogoAtivo) velocidade += 0.2;
+            }, 10000);
+        }
+
+        // EVENTOS
+        iniciarBtn.addEventListener('click', iniciarJogo);
+        reiniciarBtn.addEventListener('click', iniciarJogo);
+
+        // PULAR COM ESPACO OU TOQUE
+        document.addEventListener('keydown', e => {
+            if(e.code === 'Space') pular();
+        });
+
+        document.addEventListener('touchstart', e => {
+            e.preventDefault();
+            pular();
+        });
+
+        document.addEventListener('click', () => {
+            pular();
+        });
+    </script>
+</body>
+</html>
