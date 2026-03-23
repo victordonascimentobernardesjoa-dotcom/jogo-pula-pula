@@ -1,1 +1,302 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pula Pula - Jogo Simples</title>
+    <style>
+        /* ESTILO TOTALMENTE LEVE */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            touch-action: manipulation; /* Evita zoom no celular */
+        }
 
+        body {
+            background-color: #1a1a1a;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+        }
+
+        /* TELA DO JOGO */
+        #jogo-tela {
+            width: 100%;
+            max-width: 400px;
+            height: 300px;
+            background-color: #87CEEB;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid #fff;
+        }
+
+        /* PERSONAGEM */
+        #personagem {
+            width: 40px;
+            height: 40px;
+            background-color: #FF4500;
+            position: absolute;
+            bottom: 20px;
+            left: 50px;
+            border-radius: 50%;
+        }
+
+        /* OBSTÁCULO */
+        .obstaculo {
+            width: 30px;
+            height: 30px;
+            background-color: #228B22;
+            position: absolute;
+            bottom: 20px;
+            border-radius: 10px;
+        }
+
+        /* CHÃO */
+        #chao {
+            width: 100%;
+            height: 20px;
+            background-color: #CD853F;
+            position: absolute;
+            bottom: 0;
+        }
+
+        /* PONTUAÇÃO */
+        #pontuacao {
+            color: #fff;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        /* TELA DE INÍCIO/FIM */
+        #tela-inicio, #tela-fim {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            text-align: center;
+        }
+
+        #tela-fim {
+            display: none;
+        }
+
+        button {
+            padding: 10px 25px;
+            background-color: #FF4500;
+            border: none;
+            border-radius: 5px;
+            color: #fff;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        button:hover {
+            background-color: #FF6347;
+        }
+
+        /* INSTRUÇÕES */
+        #instrucoes {
+            color: #fff;
+            margin-top: 15px;
+            font-size: 0.9rem;
+            text-align: center;
+            max-width: 400px;
+        }
+    </style>
+</head>
+<body>
+    <div id="pontuacao">Pontos: 0</div>
+    <div id="jogo-tela">
+        <div id="chao"></div>
+        <div id="personagem"></div>
+        
+        <!-- TELA DE INÍCIO -->
+        <div id="tela-inicio">
+            <h1>PULA PULA!</h1>
+            <p>Clique ou toque para pular</p>
+            <button id="btn-iniciar">Iniciar Jogo</button>
+        </div>
+
+        <!-- TELA DE FIM -->
+        <div id="tela-fim">
+            <h1>Fim de Jogo!</h1>
+            <p id="pontos-finais">Pontos: 0</p>
+            <button id="btn-reiniciar">Jogar Novamente</button>
+        </div>
+    </div>
+    <div id="instrucoes">
+        <p>• Notebook: Clique em qualquer lugar da tela para pular</p>
+        <p>• Celular: Toque em qualquer lugar da tela para pular</p>
+        <p>• Fuja dos obstáculos para ganhar pontos!</p>
+    </div>
+
+    <script>
+        // ELEMENTOS DO JOGO
+        const jogoTela = document.getElementById('jogo-tela');
+        const personagem = document.getElementById('personagem');
+        const pontuacaoTexto = document.getElementById('pontuacao');
+        const telaInicio = document.getElementById('tela-inicio');
+        const telaFim = document.getElementById('tela-fim');
+        const pontosFinais = document.getElementById('pontos-finais');
+        const btnIniciar = document.getElementById('btn-iniciar');
+        const btnReiniciar = document.getElementById('btn-reiniciar');
+
+        // VARIÁVEIS DO JOGO
+        let pontuacao = 0;
+        let jogoRodando = false;
+        let velocidadeObstaculos = 3;
+        let intervaloObstaculos;
+        let intervaloPontos;
+
+        // FUNÇÃO PARA PULAR
+        function pular() {
+            if (!jogoRodando) return;
+            
+            if (personagem.classList != 'pulo') {
+                personagem.classList.add('pulo');
+                
+                setTimeout(() => {
+                    personagem.classList.remove('pulo');
+                }, 500);
+            }
+        }
+
+        // CRIAR OBSTÁCULOS
+        function criarObstaculo() {
+            if (!jogoRodando) return;
+
+            const obstaculo = document.createElement('div');
+            obstaculo.classList.add('obstaculo');
+            jogoTela.appendChild(obstaculo);
+
+            // Posição aleatória na tela
+            let posicaoX = jogoTela.offsetWidth;
+            obstaculo.style.left = posicaoX + 'px';
+
+            // Mover obstáculo
+            const moverObstaculo = setInterval(() => {
+                if (!jogoRodando) {
+                    clearInterval(moverObstaculo);
+                    return;
+                }
+
+                posicaoX -= velocidadeObstaculos;
+                obstaculo.style.left = posicaoX + 'px';
+
+                // Remover obstáculo quando sair da tela
+                if (posicaoX < -30) {
+                    clearInterval(moverObstaculo);
+                    jogoTela.removeChild(obstaculo);
+                }
+
+                // VERIFICAR COLISÃO
+                const personagemRect = personagem.getBoundingClientRect();
+                const obstaculoRect = obstaculo.getBoundingClientRect();
+                const jogoRect = jogoTela.getBoundingClientRect();
+
+                // Ajustar coordenadas para o jogo
+                const pTop = personagemRect.top - jogoRect.top;
+                const pBottom = personagemRect.bottom - jogoRect.top;
+                const pLeft = personagemRect.left - jogoRect.left;
+                const pRight = personagemRect.right - jogoRect.left;
+
+                const oTop = obstaculoRect.top - jogoRect.top;
+                const oBottom = obstaculoRect.bottom - jogoRect.top;
+                const oLeft = obstaculoRect.left - jogoRect.left;
+                const oRight = obstaculoRect.right - jogoRect.left;
+
+                if (
+                    pBottom > oTop &&
+                    pTop < oBottom &&
+                    pRight > oLeft &&
+                    pLeft < oRight
+                ) {
+                    jogoOver();
+                }
+            }, 10);
+        }
+
+        // AUMENTAR PONTUAÇÃO
+        function aumentarPontuacao() {
+            pontuacao++;
+            pontuacaoTexto.textContent = `Pontos: ${pontuacao}`;
+
+            // Aumentar velocidade aos 10, 20, 30 pontos...
+            if (pontuacao % 10 === 0) {
+                velocidadeObstaculos += 0.5;
+                clearInterval(intervaloObstaculos);
+                intervaloObstaculos = setInterval(criarObstaculo, 2000 - (pontuacao * 10));
+            }
+        }
+
+        // INICIAR JOGO
+        function iniciarJogo() {
+            // Resetar tudo
+            pontuacao = 0;
+            velocidadeObstaculos = 3;
+            pontuacaoTexto.textContent = `Pontos: ${pontuacao}`;
+            telaInicio.style.display = 'none';
+            telaFim.style.display = 'none';
+            jogoRodando = true;
+
+            // Adicionar estilo de pulo
+            document.styleSheets[0].insertRule(`
+                .pulo {
+                    animation: pulo 0.5s linear;
+                }
+            `, document.styleSheets[0].cssRules.length);
+
+            document.styleSheets[0].insertRule(`
+                @keyframes pulo {
+                    0% { bottom: 20px; }
+                    50% { bottom: 100px; }
+                    100% { bottom: 20px; }
+                }
+            `, document.styleSheets[0].cssRules.length);
+
+            // Iniciar criação de obstáculos e pontuação
+            intervaloObstaculos = setInterval(criarObstaculo, 2000);
+            intervaloPontos = setInterval(aumentarPontuacao, 500);
+        }
+
+        // FIM DE JOGO
+        function jogoOver() {
+            jogoRodando = false;
+            clearInterval(intervaloObstaculos);
+            clearInterval(intervaloPontos);
+            
+            // Remover todos os obstáculos
+            const obstaculos = document.querySelectorAll('.obstaculo');
+            obstaculos.forEach(obs => jogoTela.removeChild(obs));
+
+            // Mostrar tela de fim
+            pontosFinais.textContent = `Pontos: ${pontuacao}`;
+            telaFim.style.display = 'flex';
+        }
+
+        // EVENTOS
+        btnIniciar.addEventListener('click', iniciarJogo);
+        btnReiniciar.addEventListener('click', iniciarJogo);
+
+        // Clique/touch para pular
+        document.addEventListener('click', pular);
+        document.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            pular();
+        });
+    </script>
+</body>
+</html>
